@@ -28,7 +28,6 @@ function App() {
       return await res.json();
     },
     queryKey: ["foo"],
-    throwOnError: true,
   });
 
   console.log(sandboxQuery);
