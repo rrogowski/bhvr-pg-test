@@ -7,8 +7,6 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
 const client = hcWithType(SERVER_URL);
 
-type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
-
 function App() {
   const apiRequestMutation = useMutation({
     mutationFn: async () => {
@@ -19,7 +17,7 @@ function App() {
       const data = await res.json();
       return data;
     },
-    onError: (err: any) => console.log(err),
+    onError: (err) => console.log(err),
   });
 
   const sandboxQuery = useQuery({
