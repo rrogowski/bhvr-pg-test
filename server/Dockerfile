@@ -27,6 +27,7 @@ COPY . .
 
 RUN bun --version
 RUN bunx tsc --version
+RUN bun pm ls typescript
 
 # [optional] tests & build
 ENV NODE_ENV=production
