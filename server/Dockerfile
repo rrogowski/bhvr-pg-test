@@ -25,6 +25,7 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
+RUN bun --version
 RUN bunx tsc --version
 
 # [optional] tests & build
