@@ -5,9 +5,6 @@ import { logger } from "hono/logger";
 import z from "zod";
 import { sql } from "./database";
 
-console.log("process.env");
-console.log(process.env);
-
 export const app = new Hono()
 
   .use(cors())

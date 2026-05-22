@@ -3,6 +3,9 @@ import { Connector, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
 
 const connector = new Connector();
 
+console.log("process.env");
+console.log(process.env);
+
 const clientOpts =
   process.env.MODE === "production"
     ? await connector.getOptions({
@@ -10,6 +13,9 @@ const clientOpts =
         ipType: IpAddressTypes.PUBLIC,
       })
     : { host: "localhost" };
+
+console.log("client opts");
+console.log(clientOpts);
 
 export const sql = postgres({
   ...clientOpts,
