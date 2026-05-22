@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import z from "zod";
+import { sql } from "./database";
 
 export const app = new Hono()
 
@@ -21,6 +22,11 @@ export const app = new Hono()
     };
 
     return c.json(data, { status: 200 });
+  })
+
+  .get("/sql", async (c) => {
+    const result = await sql`SELECT 1 + 1 as sum`;
+    return c.json({ sum: result.at(0)?.sum }, { status: 200 });
   })
 
   .post(

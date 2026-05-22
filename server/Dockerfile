@@ -36,7 +36,7 @@ WORKDIR /usr/src/app
 
 # # copy production dependencies and source code into final image
 # FROM base AS release
-# COPY --from=install /temp/prod/node_modules node_modules
+# COPY --from=install /temp/prod/node_modules ./server/node_modules
 # COPY --from=prerelease /usr/src/app/server ./server
 # COPY --from=prerelease /usr/src/app/package.json .
 
