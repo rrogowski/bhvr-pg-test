@@ -1,26 +1,24 @@
-import postgres from "postgres";
+import { Pool } from "pg";
 import { Connector, IpAddressTypes } from "@google-cloud/cloud-sql-connector";
 
 const connector = new Connector();
 
-console.log("process.env");
-console.log(process.env);
-
 const clientOpts =
   process.env.MODE === "production"
-    ? await connector.getOptions({
-        instanceConnectionName: "nuance-c9944:us-east4:bhvr-pg-test",
-        ipType: IpAddressTypes.PUBLIC,
-      })
-    : { host: "localhost" };
+    ? {
+        ...(await connector.getOptions({
+          instanceConnectionName: "nuance-c9944:us-east4:bhvr-pg-test",
+          ipType: IpAddressTypes.PUBLIC,
+        })),
+      }
+    : {};
 
 console.log("client opts");
 console.log(clientOpts);
 
-export const sql = postgres({
+export const pool = new Pool({
   ...clientOpts,
-  port: 5432,
-  username: "postgres",
+  user: "postgres",
   password: process.env.POSTGRES_PASSWORD,
   database: "postgres",
 });

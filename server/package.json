@@ -20,8 +20,9 @@
   "dependencies": {
     "@google-cloud/cloud-sql-connector": "^1.11.0",
     "@hono/zod-validator": "^0.8.0",
+    "@types/pg": "^8.20.0",
     "hono": "^4.10.8",
-    "postgres": "^3.4.9",
+    "pg": "^8.21.0",
     "shared": "workspace:*",
     "zod": "^4.4.3"
   },
