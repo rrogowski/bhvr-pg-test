@@ -79,7 +79,7 @@ export const app = new Hono()
       `SELECT ($1::smallint + $2::smallint) as sum`,
       [value, value],
     );
-    return c.json({ sum: result.rows.at(1)?.sum }, { status: 200 });
+    return c.json({ sum: result.rows.at(0)?.sum }, { status: 200 });
   })
 
   .post(

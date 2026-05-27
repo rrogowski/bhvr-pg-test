@@ -3,7 +3,10 @@ import { hcWithType } from "server/client";
 import beaver from "./assets/beaver.svg";
 import "./App.css";
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER_URL =
+  import.meta.env.MODE === "production"
+    ? "https://bhvr-pg-test-412409676430.us-east4.run.app/"
+    : "http://localhost:3000";
 
 const client = hcWithType(SERVER_URL);
 
