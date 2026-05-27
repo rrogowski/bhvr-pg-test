@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { hcWithType } from "server/client";
 import beaver from "./assets/beaver.svg";
 import "./App.css";
@@ -8,6 +8,8 @@ const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 const client = hcWithType(SERVER_URL);
 
 function App() {
+  const queryClient = useQueryClient();
+
   const apiRequestMutation = useMutation({
     mutationFn: async () => {
       const res = await client.hello.$get();
@@ -34,6 +36,9 @@ function App() {
       }
     },
     onError: (err) => alert(err),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
   });
 
   console.log(createUserMutation.isSuccess && createUserMutation.data);
