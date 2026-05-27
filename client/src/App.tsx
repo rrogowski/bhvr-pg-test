@@ -48,7 +48,7 @@ function App() {
 
   const sandboxQuery = useQuery({
     queryFn: async () => {
-      const res = await client.sandbox.$post({ json: { foo: 50 } });
+      const res = await client.sandbox.$post({ json: { foo: 20 } });
       return await res.json();
     },
     queryKey: ["foo"],
