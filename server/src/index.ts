@@ -25,10 +25,11 @@ export const app = new Hono()
   })
 
   .get("/users", async (c) => {
-    return c.json([
-      { name: "Roman", age: 30 },
-      { name: "Will", age: 30 },
-    ]);
+    const result = await pool.query<{ first_name: string; age: number }>(
+      `SELECT first_name, age FROM "User" WHERE first_name = $1`,
+      ["Bob"],
+    );
+    return c.json({ users: result.rows, success: true });
   })
 
   .post(

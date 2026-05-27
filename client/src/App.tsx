@@ -105,10 +105,10 @@ function App() {
           <pre className="response">
             <code>
               Users:{" "}
-              {usersQuery.data.map((u) => {
+              {usersQuery.data.users.map((u) => {
                 return (
-                  <p key={u.name}>
-                    {u.name} is {u.age} years old.
+                  <p key={u.first_name}>
+                    {u.first_name} is {u.age} years old.
                   </p>
                 );
               })}{" "}
