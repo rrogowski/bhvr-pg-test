@@ -13,9 +13,6 @@ const clientOpts =
       }
     : {};
 
-console.log("client opts");
-console.log(clientOpts);
-
 export const pool = new Pool({
   ...clientOpts,
   user: "postgres",

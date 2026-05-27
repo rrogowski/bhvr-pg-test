@@ -20,6 +20,24 @@ function App() {
     onError: (err) => console.log(err),
   });
 
+  const createUserMutation = useMutation({
+    mutationFn: async () => {
+      const result = await client.users.$post({
+        json: { name: "Bob", age: 24 },
+      });
+      const json = await result.json();
+      console.log(json);
+      if (json.success) {
+        return json.data;
+      } else {
+        console.error(json.errors);
+      }
+    },
+    onError: (err) => alert(err),
+  });
+
+  console.log(createUserMutation.isSuccess && createUserMutation.data);
+
   const sandboxQuery = useQuery({
     queryFn: async () => {
       const res = await client.sandbox.$post({ json: { foo: 50 } });
@@ -28,7 +46,18 @@ function App() {
     queryKey: ["foo"],
   });
 
-  console.log(sandboxQuery);
+  const doubledQuery = useQuery({
+    queryFn: () =>
+      client.double[":value"]
+        .$get({ param: { value: "300" } })
+        .then((r) => r.json()),
+    queryKey: [],
+  });
+
+  const usersQuery = useQuery({
+    queryFn: () => client.users.$get().then((r) => r.json()),
+    queryKey: ["users"],
+  });
 
   return (
     <>
@@ -44,6 +73,7 @@ function App() {
       <h1>bhvr</h1>
       <h2>Bun + Hono + Vite + React</h2>
       <p>A typesafe fullstack monorepo</p>
+      <button onClick={() => createUserMutation.mutate()}>Create Bob</button>
       <div className="card">
         <div className="button-container">
           <button type="button" onClick={() => apiRequestMutation.mutate()}>
@@ -63,6 +93,26 @@ function App() {
             <code>
               Success: {sandboxQuery.data.success.toString()} <br />
               Doubled: {sandboxQuery.data.doubled}
+            </code>
+          </pre>
+        )}
+        {doubledQuery.isSuccess && (
+          <pre className="response">
+            <code>Doubled Result: {doubledQuery.data.sum}</code>
+          </pre>
+        )}
+        {usersQuery.isSuccess && (
+          <pre className="response">
+            <code>
+              Users:{" "}
+              {usersQuery.data.map((u) => {
+                return (
+                  <p key={u.name}>
+                    {u.name} is {u.age} years old.
+                  </p>
+                );
+              })}{" "}
+              <br />
             </code>
           </pre>
         )}

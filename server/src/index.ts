@@ -2,7 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import z from "zod";
+import z, { type ZodSafeParseError } from "zod";
 import { pool } from "./database";
 
 export const app = new Hono()
@@ -24,9 +24,61 @@ export const app = new Hono()
     return c.json(data, { status: 200 });
   })
 
+  .get("/users", async (c) => {
+    return c.json([
+      { name: "Roman", age: 30 },
+      { name: "Will", age: 30 },
+    ]);
+  })
+
+  .post(
+    "/users",
+    zValidator(
+      "json",
+      z.object({ name: z.string(), age: z.number().min(20) }),
+      (result, c) => {
+        if (!result.success) {
+          return c.json(
+            {
+              success: false,
+              errors: result.error.issues,
+            } as const,
+            400,
+          );
+        }
+      },
+    ),
+    async (c) => {
+      const user = c.req.valid("json");
+      console.log("creating new user", user);
+
+      const result = await pool.query<{ first_name: string; age: number }>(
+        `INSERT INTO "User" VALUES($1, null, $2) RETURNING *;`,
+        [user.name, user.age],
+      );
+      console.log(result.rowCount);
+
+      if (result.rowCount === 1) {
+        return c.json({ data: result.rows[0], success: true });
+      }
+
+      return c.json({ errors: ["Unknown Error Occurred"], success: false });
+    },
+  )
+
   .get("/sql", async (c) => {
     const result = await pool.query(`SELECT version() as version`);
     return c.json({ version: result.rows.at(0)?.version }, { status: 200 });
+  })
+
+  .get("/double/:value", async (c) => {
+    const value = Number(c.req.param("value"));
+    console.log("value", value);
+    const result = await pool.query<{ sum: number }>(
+      `SELECT ($1::smallint + $2::smallint) as sum`,
+      [value, value],
+    );
+    return c.json({ sum: result.rows.at(1)?.sum }, { status: 200 });
   })
 
   .post(
